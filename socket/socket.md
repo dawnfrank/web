@@ -1,6 +1,15 @@
 #Socket
 ![](socket_flow.png)
 
+socket 在网络系统中的作用如下:
+ * socket 位于网络协议之上，屏蔽了不同网络协议之间的差异。
+ * socket 是网络编程的入口，它提供了大量的系统调用，构成了网络程序的主体。
+
+##Socket 函数
+  * TCP发送数据时，已建立好TCP链接，所以不需要指定地址，而UDP是面向无连接的，每次发送都需要指定发送给谁。
+  * 服务器与客户端不能直接发送列表，元素，字典等带有数据类型的格式，发送的内容必须是字符串数据。
+
+`socket.socket(family=AF_INET, type=SOCK_STREAM, proto=0, fileno=None)`
 套接字格式：`socket(family, type[,protocal])` 使用给定的套接族，套接字类型，协议编号（默认为0）来创建套接字
   * `socket.AF_UNIX`：用于同一台机器上的进程通信（既本机通信）
   * `socket.AF_INET`：用于服务器与服务器之间的网络通信
@@ -9,10 +18,6 @@
   * `socket.SOCK_DGRAM`：基于UDP的数据报式socket通信
   * `socket.SOCK_RAW`：原始套接字，普通的套接字无法处理ICMP、IGMP等网络报文，而SOCK_RAW可以；其次SOCK_RAW也可以处理特殊的IPV4报文；此外，利用原始套接字，可以通过IP_HDRINCL套接字选项由用户构造IP头
   * `socket.SOCK_SEQPACKET`：可靠的连续数据包服务
-
-##Socket 函数
-  * TCP发送数据时，已建立好TCP链接，所以不需要指定地址，而UDP是面向无连接的，每次发送都需要指定发送给谁。
-  * 服务器与客户端不能直接发送列表，元素，字典等带有数据类型的格式，发送的内容必须是字符串数据。
 
 ###服务器端 Socket 函数
   * `bind(address)`：将套接字绑定到地址，在AF_INET下，以`(host, porsetsockoptt)`的方式传入，如`s.bind((host, port))`
