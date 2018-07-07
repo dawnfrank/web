@@ -1,15 +1,19 @@
 #Socket
-![](socket_flow.png)
-
 socket 在网络系统中的作用如下:
  * socket 位于网络协议之上，屏蔽了不同网络协议之间的差异。
  * socket 是网络编程的入口，它提供了大量的系统调用，构成了网络程序的主体。
+* TCP发送数据时，已建立好TCP链接，所以不需要指定地址，而UDP是面向无连接的，每次发送都需要指定发送给谁。
+* 服务器与客户端不能直接发送列表，元素，字典等带有数据类型的格式，发送的内容必须是字符串数据。
+
+![](socket_flow.png)
+
 
 ##Socket 函数
-  * TCP发送数据时，已建立好TCP链接，所以不需要指定地址，而UDP是面向无连接的，每次发送都需要指定发送给谁。
-  * 服务器与客户端不能直接发送列表，元素，字典等带有数据类型的格式，发送的内容必须是字符串数据。
-
 `socket.socket(family=AF_INET, type=SOCK_STREAM, proto=0, fileno=None)`
+  * `family`：地址族,比如AF_INET表示IPV4协议，AF_INET6表示IPV6协议，
+  * `type`：套接字，每种套接字拥有自己的通信寻址方法,SOCK_STREAM表示TCP套接字,SOCK_DGRAM表示数据报套接字(UDP)
+  * 
+
 套接字格式：`socket(family, type[,protocal])` 使用给定的套接族，套接字类型，协议编号（默认为0）来创建套接字
   * `socket.AF_UNIX`：用于同一台机器上的进程通信（既本机通信）
   * `socket.AF_INET`：用于服务器与服务器之间的网络通信
