@@ -1,24 +1,9 @@
-##BaseServer
-###变量
-  *   * server_address：host,port
-  * RequestHandlerClass：
-  * __is_shut_down：
-  * __shutdown_request：
-
-###方法
-  * serve_forever：
-  * shutdown：
-  * handle_request：
-  * handle_request_noblock：
-  * process_request：
-  * finish_request：
-  * shutdown_request：
-  * handle_error：
+#WSGI
+>WSGI(Web Server Gateway Interface)是一种规范，描述web server如何与web application通信的规范。要实现WSGI协议，必须同时实现web server和web application，当前运行在WSGI协议之上的web框架有Torando,Flask,Django。
 
 
-##TCPServer
-###变量
-  * socket：一个socket对象
+WSGI协议主要包括server和application两部分：
+  * WSGI server负责从客户端接收请求，将request转发给application，将application返回的response返回给客户端；
+  * WSGI application接收由server转发的request，处理请求，并将处理结果返回给server。application中可以包括多个栈式的中间件(middlewares)，这些中间件需要同时实现server与application，因此可以在WSGI服务器与WSGI应用之间起调节作用：对服务器来说，中间件扮演应用程序，对应用程序来说，中间件扮演服务器。
 
-###方法
-  * server_bind：绑定socket的地址
+WSGI协议其实是定义了一种server与application解耦的规范，即可以有多个实现WSGI server的服务器，也可以有多个实现WSGI application的框架，那么就可以选择任意的server和application组合实现自己的web应用。例如uWSGI和Gunicorn都是实现了WSGI server协议的服务器，Django，Flask是实现了WSGI application协议的web框架，可以根据项目实际情况搭配使用。
