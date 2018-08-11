@@ -1,6 +1,107 @@
 #HTTP
 
-## HTTP版本
+##HTTP请求方法
+`HTTP/1.1`协议中共定义了8种HTTP请求方法，HTTP请求方法也被叫做“请求动作”，不同的方法规定了不同的操作指定的资源方式。服务端也会根据不同的请求方法做不同的响应。
+
+方法|说明
+-|-
+GET|请求指定的页面信息，并返回实体主体。
+HEAD|类似于get请求，只不过返回的响应中没有具体的内容，用于获取报头
+POST|向指定资源提交数据进行处理请求（例如提交表单或者上传文件）。数据被包含在请求体中。POST请求可能会导致新的资源的建立和/或已有资源的修改。
+PUT|从客户端向服务器传送的数据取代指定的文档的内容。
+DELETE|请求服务器删除指定的页面。
+CONNECT|HTTP/1.1协议中预留给能够将连接改为管道方式的代理服务器。
+OPTIONS|允许客户端查看服务器的性能。
+TRACE|回显服务器收到的请求，主要用于测试或诊断。
+
+##HTTP请求流程
+在Python中的处理http请求的在`http`模块，`http`模块通过区分`Server`类和`Handler`类而分离了**接受请求**和**处理请求**两个功能。
+  * 1.服务器接收来自客户端的请求
+  * 2.服务器把请求报文转发给`HttpRequestHandler`来处理
+  * 3.`HttpRequestHandler`处理请求报文并发出响应数据
+  * 4.服务器关闭整个请求过程
+
+<div>
+![](http.png)
+</div>
+
+  * `do_SPAM()`就是根据`HTTP`的请求方法不同而对应的调用`do_GET()`、`do_POST()`等等。
+
+####HTTPServer
+启动服务器之后，HTTPServer的主要处理请求在函数`_handle_request_noblock()`中
+```
+    def _handle_request_noblock(self):
+        """Handle one request, without blocking.
+
+        I assume that selector.select() has returned that the socket is
+        readable before this function was called, so there should be no risk of
+        blocking in get_request().
+        """
+        try:
+            request, client_address = self.get_request()
+        except OSError:
+            return
+        if self.verify_request(request, client_address):
+            try:
+                self.process_request(request, client_address)
+            except Exception:
+                self.handle_error(request, client_address)
+                self.shutdown_request(request)
+            except:
+                self.shutdown_request(request)
+                raise
+        else:
+            self.shutdown_request(request)
+```
+
+
+  * `get_request`：获取客户端发过来的数据和客户端地址信息。
+  * `verify_request`：检验是否需要处理此请求，默认返回True
+  * `process_request`：调用`finish_request`和`shutdown_request`
+  * `finish_request`：实例化请求处理类（`RequestHandler`）
+  * `shutdown_request`：停止发送请求
+  * `close_request`：关闭请求
+
+####HTTPRequestHandler
+
+<div align=center>
+![](requirehandler类结构.png)
+</div>
+
+
+HTTP请求处理的基类,该协议识别请求的三个部分：
+  * 请求行：`<command> <path> <version>`
+    * `command`：请求方法，一般为`GET`或`POST`
+    * `path`：请求的URL，URL编码规范 (使用 %xx 来解释 ASCII 字符，其中xx为字符16进制).
+    * `version`：HTTP版本，`HTTP/1.0`或者`HTTP/1.1`
+  * RFC-822形式的请求头：每行通过CRLF分开
+  * 消息主体（数据）
+  * 请求头和消息中间由空行隔开
+
+
+<div align=center>
+![](http请求报文.png)
+</div>
+
+主要的方法有：
+  * `handle()`：这个方法是请求处理类真正处理请求具体工作的方法，例如解析到来的请求，处理数据，并发回响应等。在BaseHTTPRequestHandler中它是一个入口文件，将调用其他的方法完成请求处理。
+  * `handle_one_request()`：用于处理请求。
+  * `parse_request()`：解析请求
+  * `send_error()`：发回错误响应
+  * `send_response()`：创建响应首行和响应首部等内容。
+  * `send_header()`：设置响应首部内容。
+  * `end_headers()`：调用此方法可以在首部后增加一个空行，表示首部内容结束
+  * `do_SPAM()`：这个方法中的`SPAM`指代GET、POST、HEAD等请求方法，需要在请求处理类中构建具体的请求处理方法，例如`do_GET`处理GET请求，`do_POST`处理POST请求。`do_SPAM()` 方法可以调用`send_response()`、`send_header()`、`end_headers()`等方法创建响应首行和响应首部等内容。
+
+
+##附录1：HTTP响应头
+
+<div align=center>
+![](http响应报文.png)
+</div>
+
+
+##附录2： HTTP版本历史
 在HTTP的发展过程中，出现了很多HTTP版本，其中的大部分协议都是向下兼容的。在进行HTTP请求时，客户端在请求时会告诉服务器它采用的协议版本号，而服务器则会在使用相同或者更早的协议版本进行响应。
 
 ####HTTP/0.9
@@ -18,42 +119,9 @@ HTTP/1.1是当前正在使用的版本。该版本默认采用持久连接，并
 
 `HTTP/1.1`新增了：`OPTIONS`、`PUT`、`DELETE`、`TRACE`、`CONNECT`五种HTTP请求方法。
 
-##HTTP请求流程
-在Python中的`http`模块通过区分`Server`类和`Handler`类而分离了**接受请求**和**处理请求**两个功能。
-
-<div>
-![](http.png)
-</div>
-
-  * `do_SPAM()`就是根据`HTTP`的请求方法不同而对应的调用`do_GET()`、`do_POST()`等等。
-
-##HTTP请求方法
-`HTTP/1.1`协议中共定义了8种HTTP请求方法，HTTP请求方法也被叫做“请求动作”，不同的方法规定了不同的操作指定的资源方式。服务端也会根据不同的请求方法做不同的响应。
 
 
-方法|说明
--|-
-GET|请求指定的页面信息，并返回实体主体。
-HEAD|类似于get请求，只不过返回的响应中没有具体的内容，用于获取报头
-POST|向指定资源提交数据进行处理请求（例如提交表单或者上传文件）。数据被包含在请求体中。POST请求可能会导致新的资源的建立和/或已有资源的修改。
-PUT|从客户端向服务器传送的数据取代指定的文档的内容。
-DELETE|请求服务器删除指定的页面。
-CONNECT|HTTP/1.1协议中预留给能够将连接改为管道方式的代理服务器。
-OPTIONS|允许客户端查看服务器的性能。
-TRACE|回显服务器收到的请求，主要用于测试或诊断。
-
-##HTTP请求头
->浏览器通知服务器
-
-请求报文是由以下4部分组成：
-  * 1.请求行
-  * 2.请求头
-  * 3.空行
-  * 4.消息主体
-
-<div align=center>
-![](http请求报文.png)
-</div>
+##附录3：HTTP请求字段
 
 协议头|说明|示例
 -|-
@@ -90,20 +158,7 @@ Upgrade|要求服务器升级到一个高版本协议。|	Upgrade: HTTP/2.0, SHT
 Via|	告诉服务器，这个请求是由哪些代理发出的。|	Via: 1.0 fred, 1.1 itbilu.com.com (Apache/1.1)
 Warning|一个一般性的警告，表示在实体内容体中可能存在错误。|	Warning: 199 Miscellaneous warning
 
-##HTTP响应头
->服务器通知浏览器
-
-响应报文是由以下4部分组成：
-  * 1.请求行
-  * 2.请求头
-  * 3.空行
-  * 4.消息主体
-
-
-<div align=center>
-![](http响应报文.png)
-</div>
-
+##附录4：HTTP响应字段
 
 响应头|说明|示例
 -|-
