@@ -39,6 +39,7 @@ Flask应用中`Rule`的对象来源于两点
 
   * `@app.route`的装饰器
 <div align=center>
+![](rule_example.png)
 ![](rule_route.png)
 </div>
 

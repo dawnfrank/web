@@ -9,3 +9,22 @@ Flask是当下流行的Web框架，它是用Python实现的。Flask显著的特�
 <div>
 ![](flask.png)
 </div>
+
+####简单的flask服务器程序
+
+```
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+    return '<h1>Hello World!</h1>'
+
+if __name__ == '__main__':
+    app.run()
+
+```

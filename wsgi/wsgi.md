@@ -2,10 +2,6 @@
 
 >WSGI(Web Server Gateway Interface)是一种规范，描述web server如何与web application通信的规范。要实现WSGI协议，必须同时实现web server和web application，当前运行在WSGI协议之上的web框架有Torando,Flask,Django。
 
-
-
-
-
 WSGI协议主要包括server和application两部分：
 
   * WSGI server负责从客户端接收请求，将request转发给application，将application返回的response返回给客户端；
@@ -16,7 +12,12 @@ WSGI协议主要包括server和application两部分：
 
 WSGI协议其实是定义了一种server与application解耦的规范，即可以有多个实现WSGI server的服务器，也可以有多个实现WSGI application的框架，那么就可以选择任意的server和application组合实现自己的web应用。例如uWSGI和Gunicorn都是实现了WSGI server协议的服务器，Django，Flask是实现了WSGI application协议的web框架，可以根据项目实际情况搭配使用。
 
-对于WSGI应用，要求实现一个可调用对象`app(environ, start_response)`。WSGI服务器中会定义`start_response()`函数并且调用WSGI应用。
+####start_response()
+[WSGI协议](https://www.python.org/dev/peps/pep-0333/)规定，对于WSGI应用，要求实现一个可调用对象`app(environ, start_response)`。WSGI服务器中会定义`start_response()`函数并且调用WSGI应用。
+
+<div align=center>
+![](wsgi_start_response.png)
+</div>
 
 ####流程图
 
@@ -60,3 +61,20 @@ WSGI协议其实是定义了一种server与application解耦的规范，即可�
 <div align=center>
 ![](response_call.png)
 </div>
+
+####简单的WSGI服务器代码
+```
+def test_app(environ, start_response):
+    req = Request(environ, populate_request=False)
+    if req.args.get('resource') == 'logo':
+        response = logo
+    else:
+        response = Response(render_testapp(req), mimetype='text/html')
+    return response(environ, start_response)
+
+
+if __name__ == '__main__':
+    from werkzeug.serving import run_simple
+    run_simple('localhost', 5000, test_app, use_reloader=True)
+
+```
