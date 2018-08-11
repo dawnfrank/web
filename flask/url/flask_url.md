@@ -50,5 +50,8 @@ Flask应用中`Rule`的对象来源于两点
 
 
 ####MapAdapter类
-一个`Map`实例的适配器。构造函数传入一个`map`对象和部分环境信息。
-`MapAdapter`类中主要的方法为`match()`——该方法将会进行具体的URL匹配工作。它会将请求中的`url`和`Map`实例中的所有`Rule`进行匹配。
+`MapAdapter`类为`Map`实例的适配器。构造函数传入一个`Map`对象和环境信息。通过`match()`方法使`Map`实例中的所有`Rule`模式和环境中的信息（服务器名，子域名等等）组合出来的路径与实际的`URL`进行匹配。匹配`URL`路径所对应的视图函数。
+
+<div align=center>
+![](mapadapter_match.png)
+</div>
