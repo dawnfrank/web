@@ -22,3 +22,40 @@ WSGI协议其实是定义了一种server与application解耦的规范，即可�
 <div align=center>
 ![](wsgi.png)
 </div>
+
+
+
+
+####Request
+<div align=center>
+![](request_类结构.png)
+</div>
+
+  * `BaseRequest` ——基础的请求类.
+  * `AcceptMixin` ——请求报文中关于客户端希望接收的数据类型的类。
+  * `ETagRequestMixin` ——请求报文中关于Etag和Cache的类。
+  * `UserAgentMixin` ——请求报文中关于user_agent的类。
+  * `AuthorizationMixin` ——请求报文中关于认证的类。
+  * `CommonRequestDescriptorsMixin` ——通过这个类可以获取请求首部中的相关信息。
+
+
+`BaseRequest`只要传递一个`WSGI`环境变量作为参数，便可以构造一个`BaseRequest`实例。所有的`BaseRequest`属性只能以**只读**的方式访问。比较常用的方法：
+  * `from_values(cls, *args, kwargs)`：可以根据参数构造要给请求
+  * `application(cls, f)`：一个装饰器，可以用来装饰`WSGI`可调用对象或函数。
+
+####Response
+
+<div align=center>
+![](response_类结构.png)
+</div>
+
+  * `BaseResponse` ——基础响应类
+  * `ETagResponseMixin` ——为响应增加Etag和Cache控制的类。
+  * `ResponseStreamMixin` ——为响应可迭代对象提供一个“只写”的接口的类。
+  * `CommonResponseDescriptorsMixin` ——通过这个类可以获取响应首部中的相关信息。
+  * `WWWAuthenticateMixin` ——为响应提供认证的类。
+
+`BaseResponse`**是一个`WSGI`应用**。
+<div align=center>
+![](response_call.png)
+</div>
