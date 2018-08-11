@@ -68,13 +68,14 @@ LocalStack._local{
 
 ####存储状态的对象
 flask中存储状态的对象在`globals`模块中，全局对象`request_ctx_stack`和`_app_ctx_stack`分别实例化了`LocalStack`类。
+Flask 设计的支柱之一是你可以在一个 Python 进程中拥有多个应用。所以要使用`_app_ctx_stack`来区分不同的应用。
+实际的web环境中，每个请求会以单独的一个线程/协程存在。所以要使用`request_ctx_stack`来区分不同的请求。
 
 <div align=center>
 ![](global_context.png)
+![](flask_context.png)
+</div>
 </div>
 
-Flask 设计的支柱之一是你可以在一个 Python 进程中拥有多个应用。所以要使用`_app_ctx_stack`来区分不同的应用。
-实际的web环境中，每个请求会以单独的一个线程/协程存在。所以要使用`request_ctx_stack`来区分不同的请求。
-  * `current_app`：获取当前应用
-  * `request`：获取当前请求
-  * `session`：获取当前域
+
+
