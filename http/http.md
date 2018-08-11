@@ -15,11 +15,11 @@ OPTIONS|允许客户端查看服务器的性能。
 TRACE|回显服务器收到的请求，主要用于测试或诊断。
 
 ##HTTP请求流程
-在Python中的处理http请求的在`http`模块，`http`模块通过区分`Server`类和`Handler`类而分离了**接受请求**和**处理请求**两个功能。
+在Python中的处理http请求的在`http`模块，`http`模块通过区分服务器和`HttpRequestHandler`而分离了**接受请求**和**处理请求**两个功能。
   * 1.服务器接收来自客户端的请求
   * 2.服务器把请求报文转发给`HttpRequestHandler`来处理
   * 3.`HttpRequestHandler`处理请求报文并发出响应数据
-  * 4.服务器关闭整个请求过程
+  * 4.服务器关闭整个请求
 
 <div>
 ![](http.png)
