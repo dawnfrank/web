@@ -1,4 +1,4 @@
-#Flask中的数据
+#Flask中的状态
 
 Flask 背后的设计理念之一就是，代码在执行时会处于两种不同的“状态”（states）
 第一种是未处理请求的时候：
@@ -10,18 +10,17 @@ Flask 背后的设计理念之一就是，代码在执行时会处于两种不�
   * 在任何时间里使用任何代码与这些对象通信
 
 
-##存储状态的类
-从面向对象设计的角度看，对象是保存"状态"的地方，Flask中这些保存"状态"的对象都在`local`模块
 
 ####local.Local类
-`Local`类实现了一种字典的数据结构。
+从面向对象设计的角度看，对象是保存"状态"的地方，Flask中这些保存"状态"的对象都在`local`模块
+
 <div align=center>
 ![](local_get_ident.png)
 ![](local_Local.png)
 ![](local_set.png)
 </div>
 
-`Local`类具有两个属性：`__storage__`和`__ident_func__`
+`Local`类实现了一种字典的数据结构。具有两个属性：`__storage__`和`__ident_func__`
   * `__storage__`：依据当前的线程/协程ID为键，来保存"状态"的对象的字典。
   * `__ident_func__`：返回一个整数，这个整数可以确定当前线程或者协程的唯一ID。
 
@@ -67,7 +66,7 @@ LocalStack._local{
 </div>
 
 
-##存储状态的对象
+####存储状态的对象
 flask中存储状态的对象在`globals`模块中，全局对象`request_ctx_stack`和`_app_ctx_stack`分别实例化了`LocalStack`类。
 
 <div align=center>
