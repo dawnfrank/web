@@ -18,6 +18,15 @@ HTTP/1.1是当前正在使用的版本。该版本默认采用持久连接，并
 
 `HTTP/1.1`新增了：`OPTIONS`、`PUT`、`DELETE`、`TRACE`、`CONNECT`五种HTTP请求方法。
 
+##HTTP请求流程
+在Python中的`http`模块通过区分`Server`类和`Handler`类而分离了**接受请求**和**处理请求**两个功能。
+
+<div>
+![](http.png)
+</div>
+
+  * `do_SPAM()`就是根据`HTTP`的请求方法不同而对应的调用`do_GET()`、`do_POST()`等等。
+
 ##HTTP请求方法
 `HTTP/1.1`协议中共定义了8种HTTP请求方法，HTTP请求方法也被叫做“请求动作”，不同的方法规定了不同的操作指定的资源方式。服务端也会根据不同的请求方法做不同的响应。
 
