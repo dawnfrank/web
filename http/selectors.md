@@ -1,5 +1,5 @@
 #Selectors
-selector支持监视被注册的文件对象中指定的IO事件，一个文件对象是一个文件描述符（`fileno`方法）。任意的对象都可以和一个文件对象关联，用来保存环境信息，设置回调等。一个selector依赖于系统有很多种实现(`select()`, `poll()`, `epoll()`...)。`DefaultSelector`实在当前操作系统中最效率的实现方式。
+`selector`支持监视被注册的文件对象中指定的IO事件，一个文件对象是一个文件描述符（`fileno`方法）。任意的对象都可以和一个文件对象关联，用来保存环境信息，设置回调等。一个selector依赖于系统有很多种实现(`select()`, `poll()`, `epoll()`...)。`DefaultSelector`实在当前操作系统中最效率的实现方式。
 
 
 <div align=center>
